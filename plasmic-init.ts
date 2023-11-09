@@ -9,6 +9,12 @@ import {
   Input,
   // Tester,
   Button,
+  Tr,
+  Th,
+  Td,
+  Table,
+  Tbody,
+  Thead,
   Borrow,
   Payoff,
   Manage,
@@ -21,6 +27,12 @@ import {
 
   // Components Meta
   imgMeta,
+  trMeta,
+  thMeta,
+  tdMeta,
+  tableMeta,
+  tbodyMeta,
+  theadMeta,
   web3Meta,
   cardMeta,
   textMeta,
@@ -58,6 +70,13 @@ PLASMIC.registerComponent(Input, inputMeta)
 PLASMIC.registerComponent(Button, buttonMeta)
 PLASMIC.registerComponent(Balance, balanceMeta)
 PLASMIC.registerComponent(Checkbox, checkboxMeta)
+
+PLASMIC.registerComponent(Tr, trMeta)
+PLASMIC.registerComponent(Th, thMeta)
+PLASMIC.registerComponent(Td, tdMeta)
+PLASMIC.registerComponent(Table, tableMeta)
+PLASMIC.registerComponent(Tbody, tbodyMeta)
+PLASMIC.registerComponent(Thead, theadMeta)
 
 // Register Liquity components
 PLASMIC.registerComponent(Borrow, borrowMeta)
