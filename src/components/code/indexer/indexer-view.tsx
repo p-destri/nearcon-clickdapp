@@ -50,6 +50,8 @@ export const indexerViewMeta = {
 export function IndexerView (props: any) {
   const context = useVMContext()
 
+  console.log('props', props)
+
   const renderPlasmicElement = (element: any, values: any) => {
     return React.cloneElement(props[element], values)
   }
