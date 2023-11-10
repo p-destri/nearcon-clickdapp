@@ -134,15 +134,14 @@ const exampleMeta: = {
 
 // Code component
 const Example = (props) => {
-	const renderPlasmicElement = (element, values) => {
+  const renderPlasmicElement = (element, values) => {
     return React.cloneElement(props[element], values)
   }
 
   return (
     <VmComponent
       src="example/path/to/bos"
-			props={{
-        ...context,
+	  props={{
         renderPlasmicElement,
         plasmicRootClassName: props.className,
       }}
@@ -181,6 +180,131 @@ This code establishes a "VMContext" with the ability to hold a global state and 
 
 The system is deliberately "agnostic," meaning it doesn't prescribe specific states or behaviors but provides a flexible mechanism for components to communicate and manage shared data as they see fit.
 
+You can check the full code of the [**VM Context here**](https://github.com/p-destri/nearcon-clickdapp/blob/main/vm-context.tsx)
+
+We implemented it within the PlasmicRootProvider:
+
+```bash
+return (
+    <PlasmicRootProvider
+    loader={PLASMIC}
+    prefetchedData={plasmicData}
+    prefetchedQueryData={queryCache}
+    pageParams={pageMeta.params}
+    pageQuery={router.query}
+    >
+    {
+        // pageMeta.displayName contains the name of the component you fetched.
+    }
+        <VMContextProvider>
+            <PlasmicComponent component={pageMeta.displayName} />
+        </VMContextProvider>
+    </PlasmicRootProvider>
+)
+```
+
+And from it, we provide the global context interaction functions: *dispatchEvent*, *registerEvent*, *dispatchState*, as well as the global state.
+
+All resources are passed via props to the BOS component:
+
+```bash
+import React from 'react';
+import { useVMContext } from '@/vm-context';
+import { VmComponent } from '@/components/vm/VmComponent';
+
+const Example = (props) => {
+  const renderPlasmicElement = (element, values) => {
+    return React.cloneElement(props[element], values)
+  }
+
+  const context = useVMContext()
+
+  return (
+    <VmComponent
+      src="example/path/to/bos"
+	  props={{
+        ...context,
+        renderPlasmicElement,
+        plasmicRootClassName: props.className,
+      }}
+    />
+  )
+}
+```
+
+Now that you have access to the VM Context to share information between different BOS components, you can create something like this:
+
+```bash
+const { 
+    global,
+    dispatchState,
+    registerEvent,
+    plasmicRootClassName,
+    renderPlasmicElement,
+} = props;
+
+const lusdTokenAbi = fetch(
+  "https://raw.githubusercontent.com/IDKNWHORU/liquity-sepolia/main/lusd-token-abi.json"
+);
+
+if (!lusdTokenAbi || !renderPlasmicElement) {
+  return "loading..."
+}
+
+State.init({
+  address: undefined,
+  chainId: undefined,
+  balance: undefined,
+});
+
+if (Ethers.provider()) {
+  const signer = Ethers.provider().getSigner();
+
+  signer.getAddress().then((address) => {
+    State.update({ address });
+
+    // Dispatch state to save in VM Context
+    dispatchState({ address });
+
+    if (state.chainId === 11155111) {
+      if (state.balance === undefined) {
+        Ethers.provider()
+          .getBalance(address)
+          .then((balance) => {
+            State.update({
+              balance: Big(balance).div(Big(10).pow(18)).toFixed(2),
+            });
+
+            // Dispatch state to save in VM Context
+            dispatchState({
+              balance: Big(balance).div(Big(10).pow(18)).toFixed(2),
+            });
+          });
+      }
+    }
+  });
+
+  Ethers.provider()
+    .getNetwork()
+    .then((chainIdData) => {
+      if (chainIdData?.chainId) {
+        State.update({ chainId: chainIdData.chainId });
+
+        // Dispatch state to save in VM Context
+        dispatchState({ chainId: chainIdData.chainId });
+      }
+    });
+}
+
+return (
+  <div className={plasmicRootClassName}>
+    {state.address &&
+      renderPlasmicElement("text", {
+        children: `Balance: ${state.balance} ETH`,
+      })}
+  </div>
+);
+```
 
 ## Installation
 ClickDapp is powered by [**Plasmic**](https://github.com/plasmicapp/plasmic).
