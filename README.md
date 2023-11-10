@@ -12,7 +12,7 @@ Code components in Plasmic allow developers to extend the functionality of the P
 
 Like this:
 
-```bash
+```javascript
 import { VmComponent } from '@/components/vm/VmComponent';
 
 const exampleMeta = {
@@ -39,7 +39,7 @@ The second parameter meta is an object containing metadata about the component. 
 
 Like this:
 
-```bash
+```javascript
 import { VmComponent } from '@/components/vm/VmComponent';
 
 const exampleMeta = {
@@ -72,7 +72,7 @@ Within the props property of the Metadata object, there is a special property ty
 
 Like this:
 
-```bash
+```javascript
 const exampleMeta: = {
   name: 'bos-example',
   displayName: '[BOS] Example',
@@ -103,7 +103,7 @@ Its purpose is straightforward: the function takes two arguments. The first argu
 
 The function:
 
-```bash
+```javascript
 const renderPlasmicElement = (element, values) => {
   return React.cloneElement(props[element], values)
 }
@@ -113,7 +113,7 @@ The styling format based on the creation of clones will most likely be modified 
 
 This way, for the following Plasmic Code Component:
 
-```bash
+```javascript
 // Meta Props
 const exampleMeta: = {
   name: 'bos-example',
@@ -152,7 +152,7 @@ const Example = (props) => {
 
 We could load a BOS component like this:
 
-```bash
+```javascript
 // BOS component
 const { renderPlasmicElement, plasmicRootClassName } = props;
 
@@ -184,7 +184,7 @@ You can check the full code of the [**VM Context here**](https://github.com/p-de
 
 We implemented it within the PlasmicRootProvider:
 
-```bash
+```javascript
 return (
     <PlasmicRootProvider
     loader={PLASMIC}
@@ -207,7 +207,7 @@ And from it, we provide the global context interaction functions: *dispatchEvent
 
 All resources are passed via props to the BOS component:
 
-```bash
+```javascript
 import React from 'react';
 import { useVMContext } from '@/vm-context';
 import { VmComponent } from '@/components/vm/VmComponent';
@@ -234,7 +234,7 @@ const Example = (props) => {
 
 Now that you have access to the VM Context to share information between different BOS components, you can create something like this:
 
-```bash
+```javascript
 const { 
     global,
     dispatchState,
@@ -316,8 +316,8 @@ If you have any problems configuring your enviroment, or hosting this app, remem
 #### Steps
 1) Clone the repository:
 ```bash
-$ gh repo clone 1Mateus/ethlisbon_poc
-$ cd ethlisbon_poc
+$ gh repo clone p-destri/nearcon-clickdapp
+$ cd nearcon-clickdapp
 ```
 
 2) Check all packages and copy the .env.example file and edit it with your environment config:
