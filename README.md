@@ -93,6 +93,87 @@ const exampleMeta: = {
 
 When using the slot type in a component's props within the Plasmic metadata object, you receive, through the component's props, elements that are controlled by Plasmic. This means you can render these elements anywhere within your React component. Essentially, you can act as a proxy, passing these Plasmic-controlled components down to the BOS component.
 
+We received a React Element Object from Plasmic. A React element object is a virtual representation of an element in a React application. While it may resemble a React component, it cannot be rendered directly using the JSX syntax <Element />. Instead, you should use the {element} syntax to insert it into a JSX component.
+
+React Element Objects do not allow us to customize the properties of the component when used. For example, we cannot add different events, classes, or states to the component.
+
+To customize properties for Plasmic components, like adding click events to buttons or listening to input events, we have introduced a callback function called renderPlasmicElement for all components loaded from the BOS in the ClickdApp.
+
+Its purpose is straightforward: the function takes two arguments. The first argument corresponds to which element within the Props you want to utilize, and the second corresponds to the properties you wish to add to the Plasmic UI component. It returns a clone of the React element object with the added properties.
+
+The function:
+
+```bash
+const renderPlasmicElement = (element, values) => {
+  return React.cloneElement(props[element], values)
+}
+```
+
+The styling format based on the creation of clones will most likely be modified in upcoming versions of ClickdApp
+
+This way, for the following Plasmic Code Component:
+
+```bash
+// Meta Props
+const exampleMeta: = {
+  name: 'bos-example',
+  displayName: '[BOS] Example',
+  importPath: '@/components/code',
+  importName: 'Example',
+  props: {
+    input: {
+      type: "slot",
+      defaultValue: [
+        {
+          name: 'ui-input',
+          type: "component",
+        }
+      ],
+    },
+};
+
+// Code component
+const Example = (props) => {
+	const renderPlasmicElement = (element, values) => {
+    return React.cloneElement(props[element], values)
+  }
+
+  return (
+    <VmComponent
+      src="example/path/to/bos"
+			props={{
+        ...context,
+        renderPlasmicElement,
+        plasmicRootClassName: props.className,
+      }}
+    />
+  )
+}
+```
+
+We could load a BOS component like this:
+
+```bash
+// BOS component
+const { renderPlasmicElement, plasmicRootClassName } = props;
+
+State.init({
+  value: "",
+});
+
+return (
+  <div className={plasmicRootClassName}>
+    {renderPlasmicElement("input", {
+      type: "text",
+      name: "description",
+      value: state.description,
+      placeholder: "Description",
+      onChange: (e) => State.update({ value: e.target.value }),
+    })}
+  </div>
+);
+```
+
 ## BOS VM Context
 
 
