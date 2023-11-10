@@ -175,6 +175,11 @@ return (
 ```
 
 ## BOS VM Context
+The VM Context is a system designed for state and event management of ClickDapp. It is built on the React Context API, which enables components to share state and event handlers without the need to prop-drill or pass down information through intermediary components. 
+
+This code establishes a "VMContext" with the ability to hold a global state and an array of event objects. Components can register new events and trigger them, as well as update the global state, by calling the provided functions. 
+
+The system is deliberately "agnostic," meaning it doesn't prescribe specific states or behaviors but provides a flexible mechanism for components to communicate and manage shared data as they see fit.
 
 
 ## Installation
